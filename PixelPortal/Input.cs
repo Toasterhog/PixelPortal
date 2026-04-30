@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace MGSimpelFysik
+namespace PixelPortal
 {
     public class Input
     {

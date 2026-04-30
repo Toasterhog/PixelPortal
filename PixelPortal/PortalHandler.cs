@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace MGSimpelFysik
+namespace PixelPortal
 {
     public class PortalHandler
     {

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace MGSimpelFysik
+namespace PixelPortal
 {
     public class Game1 : Game
     {
@@ -74,8 +74,8 @@ namespace MGSimpelFysik
             bluePortalFrameTexture = Content.Load<Texture2D>("portalGlow");
             lightTileSetTexture = Content.Load<Texture2D>("lightTileSet");
 
-            shootSE = Content.Load<SoundEffect>("Menu_Select_01");
-            openingPortalSE = Content.Load<SoundEffect>("WarpDrive_00");
+            shootSE = Content.Load<SoundEffect>("sound/Menu_Select_01");
+            openingPortalSE = Content.Load<SoundEffect>("sound/WarpDrive_00");
 
             portalGlowShader = Content.Load<Effect>("shaders/portalGlow");
         }

@@ -1,2 +1,2 @@
-﻿using var game = new MGSimpelFysik.Game1();
+﻿using var game = new PixelPortal.Game1();
 game.Run();

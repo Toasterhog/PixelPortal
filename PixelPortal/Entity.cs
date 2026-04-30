@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Diagnostics;
 
-namespace MGSimpelFysik
+namespace PixelPortal
 {
     public class Entity : IDrawable
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace MGSimpelFysik
+namespace PixelPortal
 {
     internal static class Mathlike
     {

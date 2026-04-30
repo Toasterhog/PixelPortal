@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
-namespace MGSimpelFysik
+namespace PixelPortal
 {
     public class LevelBuilder
     {

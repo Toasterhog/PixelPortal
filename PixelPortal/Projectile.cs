@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics;
 
 
-namespace MGSimpelFysik
+namespace PixelPortal
 {
     public class Projectile : PhysicalEntity 
     {

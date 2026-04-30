@@ -4,7 +4,7 @@ using SharpDX.Direct3D9;
 using System;
 
 
-namespace MGSimpelFysik
+namespace PixelPortal
 {
     public class AnimatedSprite
     {
