@@ -44,10 +44,11 @@ namespace PixelPortal
         public AdvancedSprite yellowProjectileAnim;
 
         private LevelBuilder levelBuilder;
-        private PhysicalEntity goomba;
+        private Player goomba;
         public Tilemap tilemap;
         public Physics physicsWorld;
         public PortalHandler portalSystem;
+        public static Input input;
 
         public List<IDrawable> visuals = new List<IDrawable>();
 
@@ -82,6 +83,7 @@ namespace PixelPortal
 
         protected override void Initialize()
         {
+            input = new Input();
 
             base.Initialize(); //base.init calls LoadContent
 
@@ -98,7 +100,7 @@ namespace PixelPortal
             tilemap.lightLayer = lightTileSetTexture; //new
             goombaAnim = new AnimatedSprite(goombaTexture, 16);
             //goomba = new PhysicalEntity(portalSystem, tilemap, null, goombaAnim, 16, position: new Vector2(300,300), scale: 4);
-            goomba = new PhysicalEntity(portalSystem, tilemap, companionCubeTexture, null, 25f, position: new Vector2(300, 300), scale: 50f / 134f);
+            goomba = new Player(portalSystem, tilemap, companionCubeTexture, null, 25f, position: new Vector2(300, 300), scale: 50f / 134f);
             //goomba.origin = new Vector2(8, 12);
             physicsWorld = new Physics(windowWidth, windowHeight);
             physicsWorld.entities.Add(goomba);
@@ -114,7 +116,7 @@ namespace PixelPortal
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            input.UpdateNoDelta();
             InputUppdate();
 
             goombaAnim.Update(gameTime);
