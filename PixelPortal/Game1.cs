@@ -63,9 +63,10 @@ namespace PixelPortal
 
         protected override void LoadContent()
         {
+            //TemporaryStuff.SaveTextureToFile(TemporaryStuff.CreateLightTileSet(GraphicsDevice), "LTS5");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            tileSetTexture = Content.Load<Texture2D>("tilemap_8px");
+            tileSetTexture = Content.Load<Texture2D>("tilemap_32px");
             dungeonTexture = Content.Load<Texture2D>("dungeon");
             goombaTexture = Content.Load<Texture2D>("goomba");
             companionCubeTexture = Content.Load<Texture2D>("companionCube");
@@ -73,7 +74,7 @@ namespace PixelPortal
             blueProjectileTexture = Content.Load<Texture2D>("projectile2");
             //yellowProjectileTexture = Content.Load<Texture2D>("dungeon");
             bluePortalFrameTexture = Content.Load<Texture2D>("portalGlow");
-            lightTileSetTexture = Content.Load<Texture2D>("lightTileSet");
+            lightTileSetTexture =  Content.Load<Texture2D>("lightTileSet3"); //TemporaryStuff.CreateLightTileSet(GraphicsDevice);
 
             shootSE = Content.Load<SoundEffect>("sound/Menu_Select_01");
             openingPortalSE = Content.Load<SoundEffect>("sound/WarpDrive_00");
@@ -212,7 +213,8 @@ namespace PixelPortal
             //    portalSystem.SpawnProjectile(false, goomba.position, dir);
             //    Debug.WriteLine("yellow proj spawned");
             //}
-            if (ks.IsKeyDown(Keys.U) && prevks.IsKeyUp(Keys.U)) {
+            if (ks.IsKeyDown(Keys.U) && prevks.IsKeyUp(Keys.U))
+            {
                 int ts = 64;
                 Point tileMapSize = tilemap.GetTileMapSize();
                 ChangeTileSize(ts);
@@ -245,7 +247,19 @@ namespace PixelPortal
             }
         }
 
-        public void SaveTextureToFile(Texture2D texture, string fileName)
+        
+
+    }
+
+
+
+
+    
+    public static class TemporaryStuff
+    {
+        //flyta till game1 för att använda, behöver GraphicsDevice
+        
+        public static void SaveTextureToFile(Texture2D texture, string fileName)
         {
             try
             {
@@ -273,7 +287,7 @@ namespace PixelPortal
                 Debug.WriteLine("Error saving texture: " + e.Message);
             }
         }
-        private Texture2D CreateLightTileSet()
+        public static Texture2D CreateLightTileSetOld(GraphicsDevice GD) //sista itteration LTS med gpt, gammal
         {
             int ts = 32;
             int gridWidth = 16;
@@ -282,7 +296,7 @@ namespace PixelPortal
             int texWidth = ts * gridWidth;
             int texHeight = ts * gridHeight;
 
-            Texture2D mytex = new Texture2D(GraphicsDevice, texWidth, texHeight);
+            Texture2D mytex = new Texture2D(GD, texWidth, texHeight);
             Color[] colData = new Color[texWidth * texHeight];
 
             for (int tile = 0; tile < 256; tile++)
@@ -333,16 +347,186 @@ namespace PixelPortal
             return mytex;
         }
 
-    }
+        public static Texture2D CreateDebugLightTileSet(GraphicsDevice GD) //sista itteration debugLTS med gemini
+        {
+            int subTs = 9;
+            int innerTs = subTs * 3;
+            int ts = innerTs + 1;
+            int gridWidth = 16;
+            int gridHeight = 16;
 
-    public static class RandomInfo
-    {
-        public static readonly int windowWidth = 1000;
-        public static readonly int windowHeight = 600;
-        public static readonly int tileMapWidth = 20;
-        public static readonly int tileMapHeight = 12;
-        public static readonly int tileSize = 50;
+            int texWidth = ts * gridWidth;
+            int texHeight = ts * gridHeight;
+
+            Texture2D mytex = new Texture2D(GD, texWidth, texHeight);
+            Color[] colData = new Color[texWidth * texHeight];
+
+            int[,] bitMap = new int[3, 3] {
+            { 7,  0,  1 },
+            { 6, -1,  2 },
+            { 5,  4,  3 }};
+
+            for (int tile = 0; tile < 256; tile++)
+            {
+                bool[] hasaa = new bool[4];
+                for (int i = 0; i < 4; i++) hasaa[i] = (tile & (1 << 2 * i)) != 0;
+                bool[] hasdiag = new bool[4];
+                for (int i = 0; i < 4; i++) hasdiag[i] = (tile & (1 << (1 + 2 * i))) != 0;
+
+                int tileX = (tile % gridWidth) * ts;
+                int tileY = (tile / gridWidth) * ts;
+
+                for (int y = 0; y < ts; y++)
+                {
+                    for (int x = 0; x < ts; x++)
+                    {
+                        int pixelX = tileX + x;
+                        int pixelY = tileY + y;
+                        int index = (pixelY * texWidth) + pixelX;
+
+                        // Rutnätslinjen
+                        if (x == innerTs || y == innerTs)
+                        {
+                            colData[index] = Color.DimGray;
+                            continue;
+                        }
+
+                        int cellX = x / subTs;
+                        int cellY = y / subTs;
+
+                        if (cellX == 1 && cellY == 1)
+                        {
+                            // --- MITTEN ---
+                            int localX = x - subTs;
+                            int localY = y - subTs;
+
+                            float minDistance = 1.0f;
+                            float maxP = subTs - 1f;
+
+                            // 1. Raka kanter
+                            if (!hasaa[0]) minDistance = Math.Min(minDistance, localY / maxP);
+                            if (!hasaa[1]) minDistance = Math.Min(minDistance, (maxP - localX) / maxP);
+                            if (!hasaa[2]) minDistance = Math.Min(minDistance, (maxP - localY) / maxP);
+                            if (!hasaa[3]) minDistance = Math.Min(minDistance, localX / maxP);
+
+                            // 2. Diagonala hörn
+                            if (!hasdiag[3]) minDistance = Math.Min(minDistance, (float)Math.Sqrt(localX * localX + localY * localY) / maxP);
+                            if (!hasdiag[0]) minDistance = Math.Min(minDistance, (float)Math.Sqrt((maxP - localX) * (maxP - localX) + localY * localY) / maxP);
+                            if (!hasdiag[1]) minDistance = Math.Min(minDistance, (float)Math.Sqrt((maxP - localX) * (maxP - localX) + (maxP - localY) * (maxP - localY)) / maxP);
+                            if (!hasdiag[2]) minDistance = Math.Min(minDistance, (float)Math.Sqrt(localX * localX + (maxP - localY) * (maxP - localY)) / maxP);
+
+                            minDistance = MathHelper.Clamp(minDistance, 0f, 1f);
+
+                            // --- NY STYLISERING ---
+                            float lerpAmount;
+                            if (minDistance <= 0.5f)
+                            {
+                                // Om vi är närmare kanten än 0.5 tiles, var helt ljus (0.0 i Lerp)
+                                lerpAmount = 0f;
+                            }
+                            else
+                            {
+                                // Om vi är mellan 0.5 och 1.0 tiles ifrån kanten, mappa om det till 0.0 - 1.0
+                                // Exempel: 0.5 blir 0.0 (ljus), 1.0 blir 1.0 (mörk)
+                                lerpAmount = (minDistance - 0.5f) * 2f;
+                            }
+
+                            // Applicera färgen med det nya styliserade värdet
+                            colData[index] = Color.Lerp(Color.Yellow, Color.DarkBlue, lerpAmount);
+                        }
+                        else
+                        {
+                            // --- INDIKATORERNA ---
+                            int bitIndex = bitMap[cellY, cellX];
+                            bool isBitActive = (tile & (1 << bitIndex)) != 0;
+                            colData[index] = isBitActive ? Color.Black : Color.White;
+                        }
+                    }
+                }
+            }
+
+            mytex.SetData(colData);
+            return mytex;
+        }
+
+        public static Texture2D CreateLightTileSet(GraphicsDevice GD) //slutliga light tileset med gemini
+        {
+            int ts = 32; // kan välja tilestorlek
+            int gridWidth = 16;
+            int gridHeight = 16;
+
+            int texWidth = ts * gridWidth; // 128
+            int texHeight = ts * gridHeight; // 128
+
+            Texture2D mytex = new Texture2D(GD, texWidth, texHeight);
+            Color[] colData = new Color[texWidth * texHeight];
+
+            for (int tile = 0; tile < 256; tile++)
+            {
+                bool[] hasaa = new bool[4];
+                for (int i = 0; i < 4; i++) hasaa[i] = (tile & (1 << 2 * i)) != 0;
+
+                bool[] hasdiag = new bool[4];
+                for (int i = 0; i < 4; i++) hasdiag[i] = (tile & (1 << (1 + 2 * i))) != 0;
+
+                int tileX = (tile % gridWidth) * ts;
+                int tileY = (tile / gridWidth) * ts;
+
+                for (int y = 0; y < ts; y++)
+                {
+                    for (int x = 0; x < ts; x++)
+                    {
+                        int pixelX = tileX + x;
+                        int pixelY = tileY + y;
+                        int index = (pixelY * texWidth) + pixelX;
+
+                        float minDistance = 1.0f;
+                        float maxP = ts - 1f; // ts är 8, så maxP blir 7f
+                        
+                        // 1. Avstånd till raka kanter
+                        if (!hasaa[0]) minDistance = Math.Min(minDistance, y / maxP);             // Top
+                        if (!hasaa[1]) minDistance = Math.Min(minDistance, (maxP - x) / maxP);    // Right
+                        if (!hasaa[2]) minDistance = Math.Min(minDistance, (maxP - y) / maxP);    // Bottom
+                        if (!hasaa[3]) minDistance = Math.Min(minDistance, x / maxP);             // Left
+
+                        // 2. Avstånd till hörn (Börjar Top-Right och går medurs)
+                        if (!hasdiag[0]) minDistance = Math.Min(minDistance, (float)Math.Sqrt((maxP - x) * (maxP - x) + y * y) / maxP);                   // Top-Right
+                        if (!hasdiag[1]) minDistance = Math.Min(minDistance, (float)Math.Sqrt((maxP - x) * (maxP - x) + (maxP - y) * (maxP - y)) / maxP); // Bottom-Right
+                        if (!hasdiag[2]) minDistance = Math.Min(minDistance, (float)Math.Sqrt(x * x + (maxP - y) * (maxP - y)) / maxP);                   // Bottom-Left
+                        if (!hasdiag[3]) minDistance = Math.Min(minDistance, (float)Math.Sqrt(x * x + y * y) / maxP);                                     // Top-Left
+                        
+                        minDistance = MathHelper.Clamp(minDistance, 0f, 1f);
+
+                        // 3. Applicera den styliserade tröskeln
+                        float lerpAmount;
+                        if (minDistance <= 0.5f)
+                        {
+                            // De yttersta 50% av tilen (nära luften)
+                            lerpAmount = 0f;
+                        }
+                        else
+                        {
+                            // De inre 50% skapar övergången till djupt mörker
+                            lerpAmount = (minDistance - 0.5f) * 2f;
+                        }
+                        
+                        // I MonoGame styr multiplikation med en float alfakanalen.
+                        // lerpAmount = 0.0 blir helt transparent.
+                        // lerpAmount = 1.0 blir 100% svart.
+                        colData[index] = Color.Black * lerpAmount;
+                    }
+                }
+            }
+
+            mytex.SetData(colData);
+
+            // Spara ner din textur för att kunna använda den i spelet!
+            // SaveTextureToFile(mytex, "StylizedAO_TileSet"); 
+
+            return mytex;
+        }
+
+
     }
-    
 
 }
