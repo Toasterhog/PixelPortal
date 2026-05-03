@@ -63,10 +63,9 @@ namespace PixelPortal
 
         protected override void LoadContent()
         {
-            //TemporaryStuff.SaveTextureToFile(TemporaryStuff.CreateLightTileSet(GraphicsDevice), "LTS5");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            tileSetTexture = Content.Load<Texture2D>("tilemap_32px");
+            tileSetTexture = Content.Load<Texture2D>("tilemap_8px");
             dungeonTexture = Content.Load<Texture2D>("dungeon");
             goombaTexture = Content.Load<Texture2D>("goomba");
             companionCubeTexture = Content.Load<Texture2D>("companionCube");
@@ -74,7 +73,7 @@ namespace PixelPortal
             blueProjectileTexture = Content.Load<Texture2D>("projectile2");
             //yellowProjectileTexture = Content.Load<Texture2D>("dungeon");
             bluePortalFrameTexture = Content.Load<Texture2D>("portalGlow");
-            lightTileSetTexture =  Content.Load<Texture2D>("lightTileSet3"); //TemporaryStuff.CreateLightTileSet(GraphicsDevice);
+            lightTileSetTexture = Content.Load<Texture2D>("CLTS");
 
             shootSE = Content.Load<SoundEffect>("sound/Menu_Select_01");
             openingPortalSE = Content.Load<SoundEffect>("sound/WarpDrive_00");
@@ -526,7 +525,89 @@ namespace PixelPortal
             return mytex;
         }
 
+        public static Texture2D CreateCompactShadowTileSet(GraphicsDevice GD) //helt annan inplementation, 4x4 istället för 16x16, faktiskt slutliga
+        {
+            int ts = 32;
+            int texWidth = ts * 4;  // 4 kolumner
+            int texHeight = ts * 4; // 4 rader
 
+            Texture2D mytex = new Texture2D(GD, texWidth, texHeight);
+            Color[] colData = new Color[texWidth * texHeight];
+
+            for (int gridY = 0; gridY < 4; gridY++)
+            {
+                for (int gridX = 0; gridX < 4; gridX++)
+                {
+                    for (int y = 0; y < ts; y++)
+                    {
+                        for (int x = 0; x < ts; x++)
+                        {
+                            int pixelX = (gridX * ts) + x;
+                            int pixelY = (gridY * ts) + y;
+                            int index = (pixelY * texWidth) + pixelX;
+
+                            float maxP = ts - 1f;
+                            float nx = x / maxP; // Normaliserad X (0.0 - 1.0)
+                            float ny = y / maxP; // Normaliserad Y (0.0 - 1.0)
+
+                            float alpha = 0f; // 0 = Ljust, 1 = Mörkt
+
+                            // --- Rad 0: Special ---
+                            if (gridY == 0)
+                            {
+                                if (gridX == 0) alpha = 0f; // Helt ljus
+                                if (gridX == 1) alpha = 1f; // Helt mörk
+                                if (gridX == 3)
+                                {
+                                    // Ljus i NV och SÖ (Diagonalt)
+                                    float alphaNW = (float)Math.Sqrt(nx * nx + ny * ny);
+                                    float alphaSE = (float)Math.Sqrt((1f - nx) * (1f - nx) + (1f - ny) * (1f - ny));
+                                    alpha = 1 - Math.Min(1f, Math.Min(alphaNW, alphaSE));
+                                }
+                                if (gridX == 2)
+                                {
+                                    // Ljus i NÖ och SV (Diagonalt)
+                                    float alphaNE = (float)Math.Sqrt((1f - nx) * (1f - nx) + ny * ny);
+                                    float alphaSW = (float)Math.Sqrt(nx * nx + (1f - ny) * (1f - ny));
+                                    alpha = 1 - Math.Min(1f, Math.Min(alphaNE, alphaSW));
+                                }
+                            }
+                            // --- Rad 1: Linjära väggar ---
+                            else if (gridY == 1)
+                            {
+                                if (gridX == 0) alpha = ny;            // Luft Norr
+                                if (gridX == 1) alpha = 1f - nx;       // Luft Öst
+                                if (gridX == 2) alpha = 1f - ny;       // Luft Söder
+                                if (gridX == 3) alpha = nx;            // Luft Väst
+                            }
+                            // --- Rad 2: Ljusa hörn (Konvexa hörn där 2 intilliggande sidor är luft) ---
+                            else if (gridY == 2)
+                            {
+                                if (gridX == 0) alpha = 1f - Math.Min(1f, (float)Math.Sqrt(nx * nx + (1f - ny) * (1f - ny)));             // Luft N & Ö
+                                if (gridX == 1) alpha = 1f - Math.Min(1f, (float)Math.Sqrt(nx * nx + ny * ny));                           // Luft S & Ö
+                                if (gridX == 2) alpha = 1f - Math.Min(1f, (float)Math.Sqrt((1f - nx) * (1f - nx) + ny * ny));             // Luft S & V
+                                if (gridX == 3) alpha = 1f - Math.Min(1f, (float)Math.Sqrt((1f - nx) * (1f - nx) + (1f - ny) * (1f - ny))); // Luft N & V
+                            }
+                            // --- Rad 3: Mörka hörn (Konkava hörn där luften BARA nuddar diagonalt) ---
+                            else if (gridY == 3)
+                            {
+                                if (gridX == 0) alpha = Math.Min(1f, (float)Math.Sqrt((1f - nx) * (1f - nx) + ny * ny));               // Luft NÖ
+                                if (gridX == 1) alpha = Math.Min(1f, (float)Math.Sqrt((1f - nx) * (1f - nx) + (1f - ny) * (1f - ny))); // Luft SÖ
+                                if (gridX == 2) alpha = Math.Min(1f, (float)Math.Sqrt(nx * nx + (1f - ny) * (1f - ny)));               // Luft SV
+                                if (gridX == 3) alpha = Math.Min(1f, (float)Math.Sqrt(nx * nx + ny * ny));                             // Luft NV
+                            }
+
+                            colData[index] = Color.Black * alpha;
+                        }
+                    }
+                }
+            }
+
+            mytex.SetData(colData);
+            return mytex;
+        }
+
+        //från innit() eller loadC() //TemporaryStuff.SaveTextureToFile(TemporaryStuff.CreateCompactShadowTileSet(GraphicsDevice), "CLTS0");
     }
 
 }
