@@ -7,6 +7,7 @@ namespace PixelPortal
 {
     public class Player : PhysicalEntity
     {
+        const int SPEED = 200;
         public Player(PortalHandler portalSystem, Tilemap tilemap, float collisionradious = 10) : base( portalSystem, tilemap, collisionradious)
         {
         }
@@ -25,17 +26,17 @@ namespace PixelPortal
         public void MovementInput()
         {
             Input i = Game1.input;
-            if(i.IsKeyDown(Keys.D))
+            if(i.IsKeyDown(Keys.D) && velocity.X < SPEED)
             {
-                velocity.X += 10;
+                velocity.X += 30;
             }
-            if (i.IsKeyDown(Keys.A))
+            if (i.IsKeyDown(Keys.A) && velocity.X > -SPEED)
             {
-                velocity.X -= 10;
+                velocity.X -= 30;
             }
-            if (i.IsKeyJustPressed(Keys.Space))
+            if (i.IsKeyJustPressed(Keys.Space) && velocity.Y <= 0) // dålig
             {
-                velocity.Y -= 500;
+                velocity.Y -= 200;
             }
         }
     }

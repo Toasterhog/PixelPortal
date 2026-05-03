@@ -159,7 +159,7 @@ namespace PixelPortal
             KeyboardState ks = Keyboard.GetState();
             MouseState ms = Mouse.GetState();
 
-            if (ks.IsKeyDown(Keys.Space)) //move goomba cheat
+            if (ks.IsKeyDown(Keys.M)) //move goomba cheat
             {
                 if (ms.LeftButton == ButtonState.Pressed)
                 {

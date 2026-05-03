@@ -58,6 +58,7 @@ namespace PixelPortal
             coord = Mathlike.WrapP(coord, new Point(20, 12));
             return tiles[coord.X, coord.Y];
         }
+        
         //public bool GetTileCollision(Point coord)
         //{
         //    int tileType = GetTileType(coord);
@@ -96,12 +97,13 @@ namespace PixelPortal
                         spriteBatch.Draw(lightLayer,
                             new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize),
                             new Rectangle(LTSindex % 4 * ts, LTSindex / 4 * ts, ts, ts),
-                            Color.White
+                            Color.White*0.95f
                         );
                     }
                 }
             }
         }
+        #region light tile map
         public void UpdateLightMap()
         {
             for (int x = 0; x < tiles.GetLength(0); x++)
@@ -130,7 +132,7 @@ namespace PixelPortal
 
             for (int i = 0; i < 4; i++)
             {
-                if (GetTileType(tpos + axisAlignedOffsets[i]) < 0)
+                if (GetTileTypeDefault(tpos + axisAlignedOffsets[i], 1) < 0)
                 {
                     corner[i] = true;
                     corner[Mathlike.ModI(i - 1, 4)] = true;
@@ -138,7 +140,7 @@ namespace PixelPortal
             }
             for (int i = 0; i < 4; i++)
             {
-                if (GetTileType(tpos + diagonalOffsets[i]) < 0)
+                if (GetTileTypeDefault(tpos + diagonalOffsets[i], 1) < 0)
                 {
                     corner[i] = true;
                 }
@@ -175,6 +177,12 @@ namespace PixelPortal
             }
             return new Point(1, 0);
         }
-
+        public int GetTileTypeDefault(Point coord, int defaul = 1)
+        {
+            Point coordWraped = Mathlike.WrapP(coord, new Point(20, 12));
+            if (coord != coordWraped) return defaul;
+            return tiles[coord.X, coord.Y];
+        }
+        #endregion 
     }
 }
