@@ -35,6 +35,7 @@ namespace PixelPortal
         //private Texture2D yellowProjectileTexture;
         public Texture2D bluePortalFrameTexture;
         public Texture2D lightTileSetTexture;
+        private Texture2D backgroundTexture;
 
         public Effect portalGlowShader;
 
@@ -74,6 +75,7 @@ namespace PixelPortal
             //yellowProjectileTexture = Content.Load<Texture2D>("dungeon");
             bluePortalFrameTexture = Content.Load<Texture2D>("portalGlow");
             lightTileSetTexture = Content.Load<Texture2D>("CLTS");
+            backgroundTexture = Content.Load<Texture2D>("background_8px");
 
             shootSE = Content.Load<SoundEffect>("sound/Menu_Select_01");
             openingPortalSE = Content.Load<SoundEffect>("sound/WarpDrive_00");
@@ -134,6 +136,8 @@ namespace PixelPortal
         {
             GraphicsDevice.Clear(Color.FromNonPremultiplied(16, 16, 16, 255));
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, windowWidth, windowHeight), Color.Gray);
 
             goomba.Draw(_spriteBatch);
             foreach (IDrawable visual in visuals)
@@ -231,6 +235,8 @@ namespace PixelPortal
             _graphics.PreferredBackBufferWidth = w;
             _graphics.PreferredBackBufferHeight = h;
             _graphics.ApplyChanges();
+            windowWidth = w;
+            windowHeight = h;
 
         }
         public void ChangeTileSize(int ts)

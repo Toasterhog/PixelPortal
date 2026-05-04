@@ -22,11 +22,11 @@ namespace PixelPortal
         public Tilemap(Texture2D _tileSet, int _tileSetSourceSize = -1)
         {
             tileset = _tileSet;
-            int tileSetSourceSize = _tileSetSourceSize > 0 ? _tileSetSourceSize : _tileSet.Height ; //assume square
+            int tileSetSourceSize = _tileSetSourceSize > 0 ? _tileSetSourceSize : _tileSet.Height ; //assume square and one row :(
             sourceRects = new Rectangle[tileset.Width / tileSetSourceSize];
             for (int i = 0; i * tileSetSourceSize < tileset.Width; i++)
             {
-                sourceRects[i] = new Rectangle(i * tileSetSourceSize, 0, tileSetSourceSize, tileset.Height);
+                sourceRects[i] = new Rectangle(i * tileSetSourceSize, 0, tileSetSourceSize, tileSetSourceSize);
             }
         }
 

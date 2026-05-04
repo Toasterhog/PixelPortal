@@ -38,7 +38,10 @@ namespace PixelPortal
         {
             return pks.IsKeyUp(key) && ks.IsKeyDown(key);
         }
-
+        public bool IsKeyJustReleased(Keys key)
+        {
+            return ks.IsKeyUp(key) && pks.IsKeyDown(key);
+        }
 
         //from monogame docs
 
