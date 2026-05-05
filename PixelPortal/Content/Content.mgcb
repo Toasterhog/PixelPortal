@@ -85,6 +85,18 @@
 /processorParam:TextureFormat=Color
 /build:goomba.png
 
+#begin hämis_spritesheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:hämis_spritesheet.png
+
 #begin portalGlow.png
 /importer:TextureImporter
 /processor:TextureProcessor

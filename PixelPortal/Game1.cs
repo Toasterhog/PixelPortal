@@ -36,11 +36,12 @@ namespace PixelPortal
         public Texture2D bluePortalFrameTexture;
         public Texture2D lightTileSetTexture;
         private Texture2D backgroundTexture;
+        private Texture2D hämisTexture;
 
         public Effect portalGlowShader;
 
-        private AnimatedSprite goombaAnim;
         private AnimatedSprite goalAnim;
+        private AdvancedSprite playerAnim;
         public AdvancedSprite blueProjectileAnim;
         public AdvancedSprite yellowProjectileAnim;
 
@@ -72,10 +73,10 @@ namespace PixelPortal
             companionCubeTexture = Content.Load<Texture2D>("companionCube");
             goalTexture = Content.Load<Texture2D>("goalblob_8px");
             blueProjectileTexture = Content.Load<Texture2D>("projectile2");
-            //yellowProjectileTexture = Content.Load<Texture2D>("dungeon");
             bluePortalFrameTexture = Content.Load<Texture2D>("portalGlow");
             lightTileSetTexture = Content.Load<Texture2D>("CLTS");
             backgroundTexture = Content.Load<Texture2D>("background_8px");
+            hämisTexture = Content.Load<Texture2D>("hämis_spritesheet");
 
             shootSE = Content.Load<SoundEffect>("sound/Menu_Select_01");
             openingPortalSE = Content.Load<SoundEffect>("sound/WarpDrive_00");
@@ -100,9 +101,10 @@ namespace PixelPortal
             tilemap = new Tilemap(tileSetTexture); //had param 8
             tilemap.goalsprite = goalAnim;
             tilemap.lightLayer = lightTileSetTexture; //new
-            goombaAnim = new AnimatedSprite(goombaTexture, 16);
-            //goomba = new PhysicalEntity(portalSystem, tilemap, null, goombaAnim, 16, position: new Vector2(300,300), scale: 4);
-            goomba = new Player(portalSystem, tilemap, companionCubeTexture, null, 25f, position: new Vector2(300, 300), scale: 50f / 134f);
+            playerAnim = new AdvancedSprite(hämisTexture, new Point(12,12), new int[]{10,12,4,5});
+            playerAnim.Delay = 1000 / 7f;
+            goomba = new Player(portalSystem, tilemap, null, playerAnim, 50 / 8f * 3f, position: new Vector2(300,300), scale: 50/8f * 3/5f);
+            //goomba = new Player(portalSystem, tilemap, companionCubeTexture, null, 25f, position: new Vector2(300, 300), scale: 50f / 134f);
             //goomba.origin = new Vector2(8, 12);
             physicsWorld = new Physics(windowWidth, windowHeight);
             physicsWorld.entities.Add(goomba);
@@ -121,7 +123,7 @@ namespace PixelPortal
             input.UpdateNoDelta();
             InputUppdate();
 
-            goombaAnim.Update(gameTime);
+            playerAnim.Update(gameTime);
             goalAnim.Update(gameTime);
             blueProjectileAnim.Update(gameTime);
             yellowProjectileAnim.Update(gameTime);

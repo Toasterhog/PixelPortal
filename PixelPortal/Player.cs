@@ -28,13 +28,16 @@ namespace PixelPortal
         public void MovementInput()
         {
             Input i = Game1.input;
+            int animseq = 0;
             if(i.IsKeyDown(Keys.D) && velocity.X < SPEED)
             {
                 velocity.X += 30;
+                animseq = 3;
             }
             if (i.IsKeyDown(Keys.A) && velocity.X > -SPEED)
             {
                 velocity.X -= 30;
+                animseq = 3;
             }
             if (i.IsKeyJustPressed(Keys.Space))
             {
@@ -46,6 +49,8 @@ namespace PixelPortal
             {
                 bounciness = defaultBouncinas;
             }
+            AdvancedSprite a = animatedSprite as AdvancedSprite; 
+            a.SetSequence(animseq);
         }
 
         bool CollidingGroundward()

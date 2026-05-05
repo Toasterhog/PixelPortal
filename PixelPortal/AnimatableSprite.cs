@@ -26,8 +26,8 @@ namespace PixelPortal
         public virtual Rectangle CurrentTextureRegion => textureRegions[frame];
 
         public AnimatedSprite(Texture2D texture) 
-        { 
-            this.texture = texture; 
+        {
+            this.texture = texture;
             //Playing = false; 
         }
         public AnimatedSprite(Texture2D Texture, int regionWidth = 0)
@@ -63,14 +63,45 @@ namespace PixelPortal
     {
         private Rectangle[,] textures;
         private Point index = new Point();
+        private int[] sequenceLengths;
         public override Rectangle CurrentTextureRegion => textures[index.X,index.Y];
+
+
 
         public AdvancedSprite(Texture2D texture, Point regionSize) : base(texture)
         {
-            textures = new Rectangle[texture.Width/regionSize.X , texture.Height/regionSize.Y];
-            for ( int y = 0; y < textures.GetLength(1); y++)
+            textures = new Rectangle[texture.Width / regionSize.X, texture.Height / regionSize.Y];
+            for (int y = 0; y < textures.GetLength(1); y++)
             {
-                for ( int x = 0; x < textures.GetLength(0); x++)
+                for (int x = 0; x < textures.GetLength(0); x++)
+                {
+                    textures[x, y] = new Rectangle(x * regionSize.X, y * regionSize.Y, regionSize.X, regionSize.Y);
+                }
+            }
+
+            sequenceLengths = new int[textures.GetLength(1)];
+            for (int r = 0; r < sequenceLengths.Length; r++)
+            {
+                sequenceLengths[r] = textures.GetLength(0);
+            }
+        }
+
+
+        public AdvancedSprite(Texture2D texture, Point regionSize, int[] rowLengths) : base(texture)
+        {
+            int texturesRows = Math.Min(texture.Height / regionSize.Y, rowLengths.Length);
+            int texturesColumns = texture.Width / regionSize.X;
+            textures = new Rectangle[texturesColumns, texturesRows];
+
+            for (int r = 0; r < texturesRows; r++)
+            {
+                rowLengths[r] = Math.Min(rowLengths[r], texturesColumns);
+            }
+            sequenceLengths = rowLengths;
+            
+            for (int y = 0; y < texturesRows; y++)
+            {
+                for (int x = 0; x < sequenceLengths[y]; x++)
                 {
                     textures[x, y] = new Rectangle(x * regionSize.X, y * regionSize.Y, regionSize.X, regionSize.Y);
                 }
@@ -86,7 +117,7 @@ namespace PixelPortal
             {
                 elapsed -= delay;
                 index.X ++;
-                if (index.X >= textures.GetLength(0))
+                if (index.X >= sequenceLengths[index.Y])
                 {
                     index.X = 0;
                 }
@@ -95,8 +126,16 @@ namespace PixelPortal
         }
         public void SetSequence(int sequence)
         {
-            if (sequence >= 0 && sequence < textures.GetLength(1)) { index.Y = sequence; }
+            if (sequence >= 0 && sequence < textures.GetLength(1)) 
+            { 
+                index.Y = sequence; 
+                if(index.X >= sequenceLengths[sequence])
+                {
+                    index.X = 0;
+                }
+            }
         }
 
     }
 }
+
