@@ -75,8 +75,8 @@ namespace PixelPortal
             blueProjectileTexture = Content.Load<Texture2D>("projectile2");
             bluePortalFrameTexture = Content.Load<Texture2D>("portalGlow");
             lightTileSetTexture = Content.Load<Texture2D>("CLTS");
-            backgroundTexture = Content.Load<Texture2D>("background_8px");
-            hämisTexture = Content.Load<Texture2D>("hämis_spritesheet");
+            backgroundTexture = Content.Load<Texture2D>("pabackground_blue-gray");//background här
+            hämisTexture = Content.Load<Texture2D>("hämis_spritesheet_white"); //hämis
 
             shootSE = Content.Load<SoundEffect>("sound/Menu_Select_01");
             openingPortalSE = Content.Load<SoundEffect>("sound/WarpDrive_00");
@@ -102,10 +102,11 @@ namespace PixelPortal
             tilemap.goalsprite = goalAnim;
             tilemap.lightLayer = lightTileSetTexture; //new
             playerAnim = new AdvancedSprite(hämisTexture, new Point(12,12), new int[]{10,12,4,5});
-            playerAnim.Delay = 1000 / 7f;
+            playerAnim.Delay = 1000 / 10f;
             goomba = new Player(portalSystem, tilemap, null, playerAnim, 50 / 8f * 3f, position: new Vector2(300,300), scale: 50/8f * 3/5f);
             //goomba = new Player(portalSystem, tilemap, companionCubeTexture, null, 25f, position: new Vector2(300, 300), scale: 50f / 134f);
-            //goomba.origin = new Vector2(8, 12);
+            //goomba.origin = new Vector2(6, 6);
+            goomba.colorMultiplier = Color.FromNonPremultiplied(255,250,140,255); //player color
             physicsWorld = new Physics(windowWidth, windowHeight);
             physicsWorld.entities.Add(goomba);
             levelBuilder = new LevelBuilder(tilemap, dungeonTexture);
@@ -136,10 +137,22 @@ namespace PixelPortal
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.FromNonPremultiplied(16, 16, 16, 255));
+            //GraphicsDevice.Clear(Color.FromNonPremultiplied(140,110,60,255));
+            //GraphicsDevice.Clear(Color.FromNonPremultiplied(16, 16, 16, 255));
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, windowWidth, windowHeight), Color.Gray);
+            _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, windowWidth, windowHeight), Color.DarkGray);// sourceRectangle: new Rectangle(70,50,200,120));
+            _spriteBatch.Draw(
+                   backgroundTexture,
+                   new Rectangle(0, 0, windowWidth, windowHeight),
+                   new Rectangle(170, 50, 200, 120),
+                   Color.DarkGray,
+                   0,
+                   Vector2.One,
+                   SpriteEffects.None,
+                   0
+               );
+
 
             goomba.Draw(_spriteBatch);
             foreach (IDrawable visual in visuals)

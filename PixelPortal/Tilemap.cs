@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.Direct2D1.Effects;
 using System.Diagnostics;
 
 namespace PixelPortal
@@ -58,12 +59,15 @@ namespace PixelPortal
             coord = Mathlike.WrapP(coord, new Point(20, 12));
             return tiles[coord.X, coord.Y];
         }
-        
-        //public bool GetTileCollision(Point coord)
-        //{
-        //    int tileType = GetTileType(coord);
-        //    return
-        //}
+
+        public bool GetTileCollision(Point coord)
+        {
+            return TileIsSolid(GetTileType(coord));
+        }
+        public bool TileIsSolid(int tileType)
+        {
+            return tileType >= 0 && tileType < sourceRects.Length && tileType != 3;
+        }
         public void SetTiles(int[,] newTiles)
         {
             if (tiles.GetLength(0) == newTiles.GetLength(0) && tiles.GetLength(1) == newTiles.GetLength(1))
@@ -111,7 +115,7 @@ namespace PixelPortal
                 for (int y = 0; y < tiles.GetLength(1); y++)
                 {
                     int tile = tiles[x, y];
-                    if (tile >= 0 && tile < sourceRects.Length)
+                    if (TileIsSolid(tile))
                     {
                         Point LTSCoord = LTSRect(x, y);
                         int LTSindex = LTSCoord.X + LTSCoord.Y * 4;
@@ -132,7 +136,7 @@ namespace PixelPortal
 
             for (int i = 0; i < 4; i++)
             {
-                if (GetTileTypeDefault(tpos + axisAlignedOffsets[i], 1) < 0)
+                if (!TileIsSolid( GetTileTypeDefault(tpos + axisAlignedOffsets[i], 1)))
                 {
                     corner[i] = true;
                     corner[Mathlike.ModI(i - 1, 4)] = true;
@@ -140,7 +144,7 @@ namespace PixelPortal
             }
             for (int i = 0; i < 4; i++)
             {
-                if (GetTileTypeDefault(tpos + diagonalOffsets[i], 1) < 0)
+                if (!TileIsSolid(GetTileTypeDefault(tpos + diagonalOffsets[i], 1)))
                 {
                     corner[i] = true;
                 }

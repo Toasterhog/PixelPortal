@@ -65,7 +65,7 @@ namespace PixelPortal
         private Point index = new Point();
         private int[] sequenceLengths;
         public override Rectangle CurrentTextureRegion => textures[index.X,index.Y];
-
+        public int Sequence { get { return index.Y; } set { SetSequence(value); } }
 
 
         public AdvancedSprite(Texture2D texture, Point regionSize) : base(texture)
@@ -124,7 +124,7 @@ namespace PixelPortal
 
             }
         }
-        public void SetSequence(int sequence)
+        private void SetSequence(int sequence)
         {
             if (sequence >= 0 && sequence < textures.GetLength(1)) 
             { 

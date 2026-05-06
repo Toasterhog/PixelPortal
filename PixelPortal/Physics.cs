@@ -48,6 +48,7 @@ namespace PixelPortal
             {
                 entity.PhysicsUpdate(delta);
                 
+                //TODO entiteter reppelerar varandra simpelt
 
                 float posX = entity.position.X; //wrapa
                 if (posX > worldWidth)
