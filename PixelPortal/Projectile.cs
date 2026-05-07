@@ -10,7 +10,6 @@ namespace PixelPortal
     {
         private PortalHandler portalHandler;
         private bool isBlue;
-        public bool flipped = false; 
         const int COLLRAD = 5;
         const float SPEED = 900;
         private bool continueSteppingPU = true;
@@ -47,11 +46,11 @@ namespace PixelPortal
         
         protected override void CollisionReactionAxisAligned(Point tile, Vector2 normal, float overlap)
         {
-
+            bool flipp = Mathlike.TwoDCrossProduct(normal, velocity) > 0;
             Point collidedTile = tile - normal.ToPoint();
             if (tilemap.GetTileType(collidedTile) == 1) //white
             {
-                portalHandler.SetPortal(tile, (-normal).ToPoint(), flipped, isBlue);
+                portalHandler.SetPortal(tile, (-normal).ToPoint(), flipp, isBlue);
             }
             RemoveSelf();
         }

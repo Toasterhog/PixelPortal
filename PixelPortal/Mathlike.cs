@@ -75,5 +75,9 @@ namespace PixelPortal
             return dot / dir.LengthSquared();
         }
 
+        public static float TwoDCrossProduct(Vector2 a, Vector2 b)
+        {
+            return a.X * b.Y - a.Y * b.X;
+        }
     }
 }

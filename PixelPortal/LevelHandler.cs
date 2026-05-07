@@ -46,6 +46,7 @@ namespace PixelPortal
                 {
                     Debug.WriteLine("levelhandler level1 not exist");
                     Debug.WriteLine(levelImgPath);
+                    TemporaryStuff.SaveTextureToFile(fallBackTexture, "level1");
                     return null;
                 }
                 Texture2D tex;

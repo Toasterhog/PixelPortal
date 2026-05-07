@@ -81,7 +81,6 @@ namespace PixelPortal
                 spriteEffects: direction.X < 0 ? SpriteEffects.FlipVertically : SpriteEffects.None
             );
             proj.colorMultiplier = isBlue ? blueColor : yellowColor;
-            proj.flipped = direction.X < 0 ? true : false;
 
             game.physicsWorld.AddEntity(proj);
             game.visuals.Add(proj as IDrawable);

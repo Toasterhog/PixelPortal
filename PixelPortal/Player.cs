@@ -7,6 +7,7 @@ namespace PixelPortal
 {
     public class Player : PhysicalEntity
     {
+
         const int SPEED = 200;
         float defaultBouncinas;
         public Player(PortalHandler portalSystem, Tilemap tilemap, float collisionradious = 10) : base( portalSystem, tilemap, collisionradious)
