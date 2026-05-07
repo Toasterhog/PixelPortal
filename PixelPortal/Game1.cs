@@ -20,8 +20,8 @@ namespace PixelPortal
 
         private KeyboardState prevks;
         private MouseState prevms;
-        private Point blueAimStart;
-        private Point yellowAimStart;
+        //private Point blueAimStart; //för att skuta projektilerna med alternativa inputvarianten
+        //private Point yellowAimStart;
 
         public SoundEffect shootSE;
         public SoundEffect openingPortalSE;
@@ -47,6 +47,7 @@ namespace PixelPortal
 
         private LevelBuilder levelBuilder;
         private Player goomba;
+        private PhysicalEntity companionCube;
         public Tilemap tilemap;
         public Physics physicsWorld;
         public PortalHandler portalSystem;
@@ -92,23 +93,31 @@ namespace PixelPortal
 
             SoundHandler.innitNoises(new SoundEffect[] { shootSE, openingPortalSE });
             portalSystem = new PortalHandler(this);
+
             blueProjectileAnim = new AdvancedSprite(blueProjectileTexture, new Point(16, 5));
             yellowProjectileAnim = new AdvancedSprite(blueProjectileTexture, new Point(16, 5));
             blueProjectileAnim.Delay = 50;
             yellowProjectileAnim.Delay = 35;
+
             goalAnim = new AnimatedSprite(goalTexture, 8);
             goalAnim.Delay = 120;
+
+            playerAnim = new AdvancedSprite(hämisTexture, new Point(12, 12), new int[] { 10, 12, 4, 5 });
+            playerAnim.Delay = 1000 / 10f;
+
             tilemap = new Tilemap(tileSetTexture); //had param 8
             tilemap.goalsprite = goalAnim;
-            tilemap.lightLayer = lightTileSetTexture; //new
-            playerAnim = new AdvancedSprite(hämisTexture, new Point(12,12), new int[]{10,12,4,5});
-            playerAnim.Delay = 1000 / 10f;
+            tilemap.lightLayer = lightTileSetTexture;
+
             goomba = new Player(portalSystem, tilemap, null, playerAnim, 50 / 8f * 3f, position: new Vector2(300,300), scale: 50/8f * 3/5f);
-            //goomba = new Player(portalSystem, tilemap, companionCubeTexture, null, 25f, position: new Vector2(300, 300), scale: 50f / 134f);
-            //goomba.origin = new Vector2(6, 6);
+            goomba.origin = new Vector2(6, 6);
             goomba.colorMultiplier = Color.FromNonPremultiplied(255,250,140,255); //player color
+
+            companionCube = new PhysicalEntity(portalSystem, tilemap, companionCubeTexture, null, 25f, position: new Vector2(300, 300), scale: 50f / 134f);
+
             physicsWorld = new Physics(windowWidth, windowHeight);
             physicsWorld.entities.Add(goomba);
+            physicsWorld.entities.Add(companionCube);
             levelBuilder = new LevelBuilder(tilemap, dungeonTexture);
 
 
@@ -141,7 +150,7 @@ namespace PixelPortal
             //GraphicsDevice.Clear(Color.FromNonPremultiplied(16, 16, 16, 255));
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, windowWidth, windowHeight), Color.DarkGray);// sourceRectangle: new Rectangle(70,50,200,120));
+            //_spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, windowWidth, windowHeight), Color.DarkGray);// sourceRectangle: new Rectangle(70,50,200,120));
             _spriteBatch.Draw(
                    backgroundTexture,
                    new Rectangle(0, 0, windowWidth, windowHeight),
@@ -155,6 +164,7 @@ namespace PixelPortal
 
 
             goomba.Draw(_spriteBatch);
+            companionCube.Draw(_spriteBatch);
             foreach (IDrawable visual in visuals)
             {
                 visual.Draw(_spriteBatch);

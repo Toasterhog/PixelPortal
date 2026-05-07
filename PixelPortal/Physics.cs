@@ -47,10 +47,14 @@ namespace PixelPortal
             foreach (PhysicalEntity entity in entities)
             {
                 entity.PhysicsUpdate(delta);
-                
-                //TODO entiteter reppelerar varandra simpelt
 
-                float posX = entity.position.X; //wrapa
+                foreach (PhysicalEntity secondEntity in entities)
+                {
+                    Vector2 dist = entity.position - secondEntity.position;
+                    if(dist.Length() < 30) { entity.velocity += dist; }
+                }
+
+                    float posX = entity.position.X; //wrapa
                 if (posX > worldWidth)
                 {
                     entity.position.X = posX % worldWidth;
