@@ -109,9 +109,7 @@ namespace PixelPortal
                 }
             }
 
-            //----------------------------------------------------------------
-            //------------byter ut typ allt under mot foreach ovan------------
-            //----------------------------------------------------------------
+            //-----bytte ut typ allt under mot foreach ovan-------
             /*
              
             #region axis aligned collision detection
