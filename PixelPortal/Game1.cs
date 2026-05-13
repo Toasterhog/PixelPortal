@@ -15,8 +15,8 @@ namespace PixelPortal
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private int windowWidth = 1000;
-        private int windowHeight = 600;
+        private int windowWidth = 20 * 80; //1000;
+        private int windowHeight = 12 * 80; //600;
 
         private KeyboardState prevks;
         private MouseState prevms;
@@ -109,11 +109,12 @@ namespace PixelPortal
             tilemap.goalsprite = goalAnim;
             tilemap.lightLayer = lightTileSetTexture;
 
-            goomba = new Player(portalSystem, tilemap, null, playerAnim, 50 / 8f * 3f, position: new Vector2(300,300), scale: 50/8f * 3/5f);
+            goomba = new Player(portalSystem, tilemap, null, playerAnim, 80 / 8 * 3f, position: new Vector2(600,300), scale: 80/8 * 6/10f ); //hämis textur är 12 men 1px kant är utan kollision = 10
             goomba.origin = new Vector2(6, 6);
-            goomba.colorMultiplier = Color.FromNonPremultiplied(255,250,140,255); //player color
+            goomba.colorMultiplier = Color.FromNonPremultiplied(195,130,220,255); //player color (255,250,140,255)
 
-            companionCube = new PhysicalEntity(portalSystem, tilemap, companionCubeTexture, null, 25f, position: new Vector2(300, 300), scale: 50f / 134f);
+            companionCube = new PhysicalEntity(portalSystem, tilemap, companionCubeTexture, null, 40f, position: new Vector2(300, 300), scale: 80f / 134f);
+            //companionCube = new PhysicalEntity(portalSystem, tilemap, companionCubeTexture, null, 25f, position: new Vector2(300, 300), scale: 50f / 8f);
 
             physicsWorld = new Physics(windowWidth, windowHeight);
             physicsWorld.entities.Add(goomba);
@@ -243,16 +244,29 @@ namespace PixelPortal
             //}
             if (ks.IsKeyDown(Keys.U) && prevks.IsKeyUp(Keys.U))
             {
-                int ts = 64;
                 Point tileMapSize = tilemap.GetTileMapSize();
+                int ts = Tilemap.tileSize == 80 ? 50 : 80;
                 ChangeTileSize(ts);
                 ChangeWindowSize(tileMapSize.X * ts, tileMapSize.Y * ts);
             }
+            
 
             prevks = ks;
             prevms = ms;
         }
 
+        //public void ToggleFullscreen()
+        //{
+        //    //Window.IsBorderless = !Window.IsBorderless;
+        //    //_graphics.IsFullScreen = !_graphics.IsFullScreen;
+
+        //    _graphics.ApplyChanges();
+        //    int w = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        //    int h = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        //    ChangeWindowSize(w, h);
+
+        //    physicsWorld.deltaMultiplier = 8 / 5f; ;
+        //}
         public void ChangeWindowSize(int w, int h)
         {
             w = Mathlike.ClampI(w, 100, 2000);
@@ -266,7 +280,7 @@ namespace PixelPortal
         }
         public void ChangeTileSize(int ts)
         {
-            Tilemap.TileSize = ts;
+            Tilemap.tileSize = ts;
             if (physicsWorld != null)
             {
                 foreach (PhysicalEntity pe in physicsWorld.entities) { pe.tileSize = ts; }

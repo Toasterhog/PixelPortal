@@ -11,8 +11,8 @@ namespace PixelPortal
     {
         private int[,] tiles = new int[20, 12];
         public int[,] Tiles => tiles;
-        private static int tileSize = 50;
-        public static int TileSize { get { return tileSize; } set { tileSize = value; } }
+        public static int tileSize = 80;
+         
         private Texture2D tileset;
         private Rectangle[] sourceRects;
         public AnimatedSprite goalsprite;

@@ -8,16 +8,23 @@ namespace PixelPortal
     public class Player : PhysicalEntity
     {
 
-        const int SPEED = 200;
+        const int SPEED = 320;
+        const int ACCELERATION = 20;
+        const int JUMPSPEED = 500;
+
         float defaultBouncinas;
+        float defaultSlidyness;
+
         public Player(PortalHandler portalSystem, Tilemap tilemap, float collisionradious = 10) : base( portalSystem, tilemap, collisionradious)
         {
             defaultBouncinas = bounciness;
+            defaultSlidyness = slidyness;
         }
         public Player(PortalHandler portalSystem, Tilemap tilemap, Texture2D texture = null, AnimatedSprite animatedSprite = null, float collisionradious = 10, Vector2? position = null, float rotation = 0, float scale = 1, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 0)
         : base(portalSystem, tilemap, texture, animatedSprite, collisionradious, position, rotation, scale, spriteEffects, layerDepth)
         {
             defaultBouncinas = bounciness;
+            defaultSlidyness = slidyness;
         }
 
         public override void PhysicsUpdate(float delta)
@@ -34,30 +41,32 @@ namespace PixelPortal
             AdvancedSprite a = animatedSprite as AdvancedSprite;
             //if (velocity.X > 100000) { spriteflipp = 1; }
             //else if (velocity.X < 100000) { spriteflipp = -1; }
-            if (velocity.LengthSquared() > 400000) { animseq = 2; }
+            if (velocity.LengthSquared() > 600*600) { animseq = 2; }
             //else if (a.Sequence == 2 && velocity.LengthSquared() < 5) { animseq = 0; }
 
             if (i.IsKeyDown(Keys.D) && velocity.X < SPEED)
             {
-                velocity.X += 30;
+                velocity.X += ACCELERATION;
+                slidyness = 0.95f;
                 animseq = 3;
             }
             if (i.IsKeyDown(Keys.A) && velocity.X > -SPEED)
             {
-                velocity.X -= 30;
+                velocity.X -= ACCELERATION;
+                slidyness = 0.95f;
                 animseq = 3;
             }
             if (i.IsKeyJustPressed(Keys.Space))
             {
                 bounciness = 1;
-                if (CollidingGroundward()) velocity.Y -= 200;
+                if (CollidingGroundward()) velocity.Y -= JUMPSPEED;
 
             }
             if (i.IsKeyJustReleased(Keys.Space))
             {
                 bounciness = defaultBouncinas;
             }
-
+            if(i.IsKeyUp(Keys.A) && i.IsKeyUp(Keys.D)) { slidyness = defaultSlidyness; }
             
 
             if (i.IsKeyJustReleased(Keys.D)) { animseq = 0; spriteflipp = 0; }

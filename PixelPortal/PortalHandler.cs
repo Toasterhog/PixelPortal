@@ -118,7 +118,7 @@ namespace PixelPortal
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            int tileSize = Tilemap.TileSize;
+            int tileSize = Tilemap.tileSize;
             Portal[] toDraw = [portalB, portalY ];
             foreach (Portal portal in toDraw)
             {

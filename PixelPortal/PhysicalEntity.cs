@@ -7,8 +7,9 @@ namespace PixelPortal
     public class PhysicalEntity : Entity
     {
         public Vector2 velocity = Vector2.Zero; // px/s
-        public Vector2 gravity = new Vector2(0, 800f); // 16 tiles per sekund^2 | px/s^2
+        public Vector2 gravity = new Vector2(0, 16*80f); // 16 tiles per sekund^2 | px/s^2
         protected float collisionradious = 10;
+        public float Collisionradious => collisionradious; //usied by physics - entity coll
         protected  Tilemap tilemap;
         protected enum CollisionShapeType { circle, square }; //meh datatyp
         protected CollisionShapeType colltype = CollisionShapeType.circle;
@@ -17,7 +18,7 @@ namespace PixelPortal
         protected float simulationSpeed = 1f;
         protected PortalHandler portalSys;
 
-        public float tileSize = Tilemap.TileSize;
+        public float tileSize = Tilemap.tileSize;
         protected Point[] axisAlignedOffsets = [new Point(1, 0), new Point(0, 1), new Point(-1, 0), new Point(0, -1)];
         protected Point[] diagonalOffsets = [new Point(1, 1), new Point(-1, 1), new Point(-1, -1), new Point(1, -1)];
 
