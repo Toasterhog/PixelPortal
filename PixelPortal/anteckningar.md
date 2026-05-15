@@ -13,3 +13,13 @@ hur är bästa sättet att göra med klasser som det bara ska finnas en av? jag 
 - physics = en icke statisk referens i Game1 
 
 Det här sättet käns väldigt rörigt (att blanda olika sätt så mycket). 
+
+
+tileset
+animated tiles
+
+white - portal placable, collision
+purple - has collision
+purple - has collision
+decorations - 
+goal - runs function on collision

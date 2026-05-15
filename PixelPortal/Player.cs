@@ -89,7 +89,7 @@ namespace PixelPortal
             float margin = 2; //2pixlar över marken räknas som kollision här
             Point tpos = Tilemap.PosToTile(position);
             Point collTile = tpos + new Point(0,1);
-            if (tilemap.GetTileType(collTile) >= 0)
+            if (tilemap.GetTileCollision(collTile))
             {
                 if (portalSys.TileHasDisabledCollision(tpos, new Point(0, 1)))
                 {

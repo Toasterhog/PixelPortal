@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
@@ -13,14 +14,20 @@ namespace PixelPortal
         public Texture2D fallBackTexture;
         private Tilemap tilemap;
         private readonly (int ID, Color Col)[] Palette = new[]{
-            ( -1, Color.Black ),
-            (  0, Color.Gray ),
-            (  0, Color.Brown ),
-            (  1, Color.White ),
-            (  1, Color.LightGray ),
-            (  2, Color.Red ),
-            (  3, Color.Blue ),
-            (  4, Color.Green )};
+            ( -1, Color.Black ), //air
+            (  0, Color.White ), //white
+            (  1, Color.FromNonPremultiplied(100,70,100,255) ), //cube
+            (  2, Color.FromNonPremultiplied(100,100,100,255) ), //brick
+            (  3, Color.FromNonPremultiplied(100,0,100,255) ), //scafold
+            (  4, Color.FromNonPremultiplied(100,0,0,255) ), //top water
+            (  5, Color.FromNonPremultiplied(128,0,0,255) ), //full water
+            (  6, Color.FromNonPremultiplied(0,40,0,255) ), //foliage ground
+            (  12, Color.FromNonPremultiplied(0,20,0,255) ), //foliage ceiling
+            (  16, Color.Blue ), //goal
+        }; 
+
+        private Random r = new Random(DateTime.Now.Millisecond);
+
 
         public LevelBuilder(Tilemap tilemap, Texture2D fallBackTexture)
         {
@@ -91,15 +98,6 @@ namespace PixelPortal
 
         private int ColorToTileType(Color color)
         {
-            if (color.A < 255) return -1;
-            else
-            {
-                int sum = color.R + color.G + color.B;
-                if (sum == 0) return -1;
-                if (sum > 750) return 1;
-            }
-            
-
             int closestID = -1;
             float minDistance = float.MaxValue;
 
@@ -116,6 +114,9 @@ namespace PixelPortal
                     closestID = Palette[i].ID;
                 }
             }
+            
+            if (closestID == 6) { return r.Next(6, 12); }
+            if (closestID == 12) { return r.Next(12, 15); }
             return closestID;
         }
 

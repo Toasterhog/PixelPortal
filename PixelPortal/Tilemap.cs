@@ -23,7 +23,7 @@ namespace PixelPortal
         public Tilemap(Texture2D _tileSet, int _tileSetSourceSize = -1)
         {
             tileset = _tileSet;
-            int tileSetSourceSize = _tileSetSourceSize > 0 ? _tileSetSourceSize : _tileSet.Height ; //assume square and one row :(
+            int tileSetSourceSize = _tileSetSourceSize > 0 ? _tileSetSourceSize : _tileSet.Height ; 
             sourceRects = new Rectangle[tileset.Width / tileSetSourceSize];
             for (int i = 0; i * tileSetSourceSize < tileset.Width; i++)
             {
@@ -66,8 +66,14 @@ namespace PixelPortal
         }
         public bool TileIsSolid(int tileType)
         {
-            return tileType >= 0 && tileType < sourceRects.Length && tileType != 3;
+            return tileType >= 0 && tileType < 4;
         }
+
+        public bool TileIsPortalPlacable(int tileType)
+        {
+            return tileType == 0;
+        }
+
         public void SetTiles(int[,] newTiles)
         {
             if (tiles.GetLength(0) == newTiles.GetLength(0) && tiles.GetLength(1) == newTiles.GetLength(1))
@@ -87,14 +93,8 @@ namespace PixelPortal
                     int tile = tiles[x, y];
                     if (tile >= 0 && tile < sourceRects.Length)
                     {
-                        if (tile == 3)
-                        {
-                            spriteBatch.Draw(goalsprite.texture, new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize), goalsprite.CurrentTextureRegion, Color.White);
-                        }
-                        else
-                        {
-                            spriteBatch.Draw(tileset, new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize), sourceRects[tile], Color.White);
-                        }
+                        spriteBatch.Draw(tileset, new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize), sourceRects[tile], Color.White);
+                        
 
                         int LTSindex = lightMap[x, y];
                         int ts = 32;
@@ -103,6 +103,10 @@ namespace PixelPortal
                             new Rectangle(LTSindex % 4 * ts, LTSindex / 4 * ts, ts, ts),
                             Color.White*0.95f
                         );
+                    }
+                    else if (tile == 16)
+                    {
+                        spriteBatch.Draw(goalsprite.texture, new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize), goalsprite.CurrentTextureRegion, Color.White);
                     }
                 }
             }

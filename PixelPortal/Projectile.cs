@@ -48,7 +48,7 @@ namespace PixelPortal
         {
             bool flipp = Mathlike.TwoDCrossProduct(normal, velocity) > 0;
             Point collidedTile = tile - normal.ToPoint();
-            if (tilemap.GetTileType(collidedTile) == 1) //white
+            if (tilemap.TileIsPortalPlacable(tilemap.GetTileType(collidedTile))) //white
             {
                 portalHandler.SetPortal(tile, (-normal).ToPoint(), flipp, isBlue);
             }

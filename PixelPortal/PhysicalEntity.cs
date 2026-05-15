@@ -52,7 +52,7 @@ namespace PixelPortal
             Point tpos = Tilemap.PosToTile(position);
 
 
-            if (tilemap.GetTileType(tpos) >= 0) //inside solid reaction
+            if (tilemap.GetTileCollision(tpos)) //inside solid reaction
             {
                 Point oldtpos = Tilemap.PosToTile(position - velocity * delta);
                 Point inDir = tpos - oldtpos;
@@ -72,7 +72,7 @@ namespace PixelPortal
             foreach (Point tileOffset in axisAlignedOffsets)
             {
                 Point collTile = tpos + tileOffset;
-                if (tilemap.GetTileType(collTile) >= 0)
+                if (tilemap.GetTileCollision(collTile))
                 {
                     if (portalSys.TileHasDisabledCollision(tpos, tileOffset) )
                     {
@@ -94,7 +94,7 @@ namespace PixelPortal
             foreach (Point tileOffset in diagonalOffsets)
             {
                 Point collTile = tpos + tileOffset;
-                if (tilemap.GetTileType(collTile) >= 0)
+                if (tilemap.GetTileCollision(collTile))
                 {
                     Vector2 tileOffsetVector = tileOffset.ToVector2();
                     Vector2 corner = tileOffsetVector * tileSize * 0.5f;

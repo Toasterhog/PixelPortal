@@ -68,7 +68,7 @@ namespace PixelPortal
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            tileSetTexture = Content.Load<Texture2D>("tilemap_8px");
+            tileSetTexture = Content.Load<Texture2D>("tileset_16x1_8px");
             dungeonTexture = Content.Load<Texture2D>("dungeon");
             goombaTexture = Content.Load<Texture2D>("goomba");
             companionCubeTexture = Content.Load<Texture2D>("companionCube");
